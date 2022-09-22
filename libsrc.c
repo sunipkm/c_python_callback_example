@@ -10,8 +10,8 @@ static void actor_fcn(zsock_t *pipe, void *arg)
     cb_func_t cb_fcn = (cb_func_t) arg;
     zpoller_t *poller = zpoller_new(pipe, NULL);
     bool terminated = false;
-    static char buf[STRLEN] = {0x0, };
-    static char buf2[2 * STRLEN] = {0x0, };
+    char *buf = (char *)malloc(STRLEN);
+    char * buf2 = (char *)malloc(2 * STRLEN);
     zsock_signal(pipe, 0);
     while (!terminated)
     {
@@ -47,6 +47,8 @@ static void actor_fcn(zsock_t *pipe, void *arg)
         }
     }
     zpoller_destroy(&poller);
+    free(buf);
+    free(buf2);
 }
 
 zactor_t *actor_new(cb_func_t input)
