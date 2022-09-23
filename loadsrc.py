@@ -13,8 +13,6 @@ from ctypes import cdll
 from ctypes import c_int
 from ctypes import cast
 
-import numpy as np
-
 import platform
 
 os_type = platform.system()
@@ -35,7 +33,8 @@ lib.actor_new.restype = POINTER(c_void_p)
 
 class actor:
     def __init__(self, py_func):
-        self._handle = lib.actor_new(LIBSRC_CALLBACK_FUNC_TYPE(py_func))
+        self._cb_func = LIBSRC_CALLBACK_FUNC_TYPE(py_func) # so that the callback is not garbage collected
+        self._handle = lib.actor_new(self._cb_func)
 
     def __del__(self):
         lib.actor_destroy(byref(self._handle))
